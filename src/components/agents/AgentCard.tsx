@@ -4,6 +4,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { cn } from '@/lib/utils';
+import { Button } from "@/components/ui/button";
+import { Info } from "lucide-react";
 
 export interface Agent {
   id: string;
@@ -15,6 +17,7 @@ export interface Agent {
   efficiency: number;
   responseTime: string;
   successRate: number;
+  description?: string;
 }
 
 interface AgentCardProps {
@@ -35,7 +38,7 @@ const AgentCard: React.FC<AgentCardProps> = ({ agent, onClick }) => {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="relative">
-              <div className="h-10 w-10 rounded-full bg-muted flex items-center justify-center overflow-hidden border border-border">
+              <div className="h-12 w-12 rounded-full bg-muted flex items-center justify-center overflow-hidden border border-border">
                 <img src={agent.avatar} alt={agent.name} className="h-full w-full object-cover" />
               </div>
               <div className={cn(
@@ -45,7 +48,7 @@ const AgentCard: React.FC<AgentCardProps> = ({ agent, onClick }) => {
               )} />
             </div>
             <div>
-              <CardTitle className="text-sm">{agent.name}</CardTitle>
+              <CardTitle className="text-base">{agent.name}</CardTitle>
               <p className="text-xs text-muted-foreground">{agent.role}</p>
             </div>
           </div>
@@ -91,6 +94,15 @@ const AgentCard: React.FC<AgentCardProps> = ({ agent, onClick }) => {
               <p className="font-medium">{agent.successRate}%</p>
             </div>
           </div>
+          
+          {agent.description && (
+            <div className="mt-2 pt-2 border-t border-border">
+              <Button variant="ghost" size="sm" className="w-full flex items-center justify-center gap-1 text-xs">
+                <Info size={12} />
+                View Agent Details
+              </Button>
+            </div>
+          )}
         </div>
       </CardContent>
     </Card>

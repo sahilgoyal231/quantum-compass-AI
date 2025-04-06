@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { ArrowUpRight, BrainCircuit, Clock, MessageSquare, Smile, UserCheck, Zap } from 'lucide-react';
 import NavBar from '@/components/NavBar';
@@ -17,39 +16,48 @@ const MOCK_AGENTS: Agent[] = [
     id: '1',
     name: 'NeuroNova',
     role: 'Customer Engagement Lead',
-    avatar: '/lovable-uploads/04036a14-dacd-496b-9e60-16b01d30aeec.png',
+    avatar: 'https://api.dicebear.com/7.x/bottts/svg?seed=neuronova&backgroundColor=b6e3f4&scale=90',
     status: 'active' as 'active',
     specialty: ['Sentiment Analysis', 'Empathetic Response'],
     efficiency: 94,
     responseTime: '1.2s',
-    successRate: 97
+    successRate: 97,
+    description: 'A specialized AI for detecting emotional undertones and providing empathetic customer support.'
   },
   {
     id: '2',
     name: 'QuantumSolve',
     role: 'Technical Support Specialist',
-    avatar: '/lovable-uploads/bbee9dda-1cfa-450e-a15f-d214b7666360.png',
+    avatar: 'https://api.dicebear.com/7.x/bottts/svg?seed=quantumsolve&backgroundColor=c0aede&scale=90',
     status: 'active' as 'active',
     specialty: ['Troubleshooting', 'Technical Solutions'],
     efficiency: 92,
     responseTime: '1.5s',
-    successRate: 95
+    successRate: 95,
+    description: 'Expert in resolving complex technical issues using quantum computing algorithms.'
   },
   {
     id: '3',
     name: 'LogisticsSolver-7',
     role: 'Logistics & Order Management',
-    avatar: 'https://api.dicebear.com/7.x/bottts/svg?seed=logistics',
+    avatar: 'https://api.dicebear.com/7.x/bottts/svg?seed=logistics&backgroundColor=d1d4f9&scale=90',
     status: 'idle' as 'idle',
     specialty: ['Order Tracking', 'Supply Chain'],
     efficiency: 89,
     responseTime: '1.8s',
-    successRate: 93
+    successRate: 93,
+    description: 'Specialized in optimizing logistics operations and managing order fulfillment.'
   }
 ];
 
 const Index = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [selectedAgent, setSelectedAgent] = useState<Agent | null>(null);
+
+  const handleAgentClick = (agent: Agent) => {
+    setSelectedAgent(agent);
+    // Future enhancement: show agent details
+  };
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -126,7 +134,11 @@ const Index = () => {
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {MOCK_AGENTS.map((agent) => (
-                    <AgentCard key={agent.id} agent={agent} />
+                    <AgentCard 
+                      key={agent.id} 
+                      agent={agent} 
+                      onClick={() => handleAgentClick(agent)} 
+                    />
                   ))}
                 </div>
               </div>

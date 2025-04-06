@@ -1,14 +1,31 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
-import { Bell, Settings, User, Menu } from "lucide-react";
+import { Bell, Settings, User, Menu, Moon, Sun, HelpCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+  navigationMenuTriggerStyle,
+} from "@/components/ui/navigation-menu";
 
 interface NavBarProps {
   toggleSidebar: () => void;
 }
 
 const NavBar: React.FC<NavBarProps> = ({ toggleSidebar }) => {
+  const [isDarkMode, setIsDarkMode] = useState(true);
+  const [notifications, setNotifications] = useState(3);
+  
+  const toggleTheme = () => {
+    // In a real app, this would toggle the theme
+    setIsDarkMode(!isDarkMode);
+  };
+  
   return (
     <nav className="w-full h-16 px-6 flex items-center justify-between bg-card/90 backdrop-blur-sm border-b border-border z-10 sticky top-0">
       <div className="flex items-center gap-4">
@@ -31,21 +48,113 @@ const NavBar: React.FC<NavBarProps> = ({ toggleSidebar }) => {
           </div>
           <div className="font-bold text-xl text-foreground">QuantumCS</div>
         </div>
+        
+        <NavigationMenu className="hidden md:flex">
+          <NavigationMenuList>
+            <NavigationMenuItem>
+              <NavigationMenuTrigger className="h-8 px-2 text-xs">Solutions</NavigationMenuTrigger>
+              <NavigationMenuContent>
+                <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
+                  {menuItems.map((item) => (
+                    <li key={item.title}>
+                      <NavigationMenuLink asChild>
+                        <a 
+                          href={item.href} 
+                          className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                        >
+                          <div className="text-sm font-medium leading-none">{item.title}</div>
+                          <p className="line-clamp-2 text-xs leading-snug text-muted-foreground">
+                            {item.description}
+                          </p>
+                        </a>
+                      </NavigationMenuLink>
+                    </li>
+                  ))}
+                </ul>
+              </NavigationMenuContent>
+            </NavigationMenuItem>
+            <NavigationMenuItem>
+              <NavigationMenuLink className={cn(navigationMenuTriggerStyle(), "h-8 px-2 text-xs")} href="/agents">
+                Agents
+              </NavigationMenuLink>
+            </NavigationMenuItem>
+            <NavigationMenuItem>
+              <NavigationMenuLink className={cn(navigationMenuTriggerStyle(), "h-8 px-2 text-xs")} href="/technologies">
+                Technologies
+              </NavigationMenuLink>
+            </NavigationMenuItem>
+          </NavigationMenuList>
+        </NavigationMenu>
       </div>
 
       <div className="flex items-center gap-1">
-        <Button variant="ghost" size="icon" className="text-foreground hover:bg-muted">
+        <Button 
+          variant="ghost" 
+          size="icon" 
+          className="text-foreground hover:bg-muted"
+          onClick={toggleTheme}
+        >
+          {isDarkMode ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+        </Button>
+        <Button 
+          variant="ghost" 
+          size="icon" 
+          className="text-foreground hover:bg-muted relative"
+        >
           <Bell className="h-5 w-5" />
+          {notifications > 0 && (
+            <span className="absolute top-1 right-1 w-4 h-4 bg-red-500 rounded-full text-xs flex items-center justify-center text-white">
+              {notifications}
+            </span>
+          )}
+        </Button>
+        <Button variant="ghost" size="icon" className="text-foreground hover:bg-muted">
+          <HelpCircle className="h-5 w-5" />
         </Button>
         <Button variant="ghost" size="icon" className="text-foreground hover:bg-muted">
           <Settings className="h-5 w-5" />
         </Button>
         <Button variant="ghost" size="icon" className="text-foreground hover:bg-muted">
-          <User className="h-5 w-5" />
+          <div className="h-7 w-7 rounded-full bg-muted flex items-center justify-center overflow-hidden">
+            <User className="h-4 w-4" />
+          </div>
         </Button>
       </div>
     </nav>
   );
 };
+
+const menuItems = [
+  {
+    title: "Problem",
+    description: "Learn about the customer support challenges we're addressing",
+    href: "/problem",
+  },
+  {
+    title: "Solution",
+    description: "Discover our innovative approach to support automation",
+    href: "/solution",
+  },
+  {
+    title: "Multi-Agent Hub",
+    description: "Explore our ecosystem of specialized AI agents",
+    href: "/agents",
+  },
+  {
+    title: "Quantum Architecture",
+    description: "Understand the technology behind our system",
+    href: "/technologies",
+  },
+  {
+    title: "Workflow",
+    description: "See how our agents collaborate to resolve issues",
+    href: "/workflow",
+  },
+  {
+    title: "Neural Network",
+    description: "Visualize our neuromorphic processing capabilities",
+    href: "/neural-net",
+  },
+];
 
 export default NavBar;
