@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import NavBar from '@/components/NavBar';
 import SideBar from '@/components/SideBar';
@@ -23,11 +22,12 @@ import {
   FormItem, 
   FormLabel, 
   FormMessage 
-} from "@/components/ui/form"
+} from "@/components/ui/form";
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import { Separator } from '@/components/ui/separator';
+import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
 import { useForm } from 'react-hook-form';
 import { 
@@ -73,7 +73,6 @@ const SettingsPage = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const { toast } = useToast();
   
-  // Profile form
   const profileForm = useForm<ProfileFormValues>({
     defaultValues: {
       firstName: 'Alex',
@@ -85,7 +84,6 @@ const SettingsPage = () => {
     },
   });
 
-  // Notification settings
   const [notificationSettings, setNotificationSettings] = useState<NotificationSettings>({
     emailNotifications: true,
     chatUpdates: true,
@@ -94,7 +92,6 @@ const SettingsPage = () => {
     marketingEmails: false,
   });
 
-  // Security settings
   const [securitySettings, setSecuritySettings] = useState<SecuritySettings>({
     twoFactorAuth: false,
     sessionTimeout: true,
@@ -102,7 +99,6 @@ const SettingsPage = () => {
     dataEncryption: true,
   });
 
-  // API Keys
   const [apiKeys, setApiKeys] = useState([
     { id: 'api-1', name: 'Production API Key', key: 'qc_prod_1a2b3c4d5e6f', createdAt: '2023-08-15', lastUsed: '2023-10-12' },
     { id: 'api-2', name: 'Development API Key', key: 'qc_dev_7g8h9i0j1k2l', createdAt: '2023-09-22', lastUsed: '2023-10-10' },
