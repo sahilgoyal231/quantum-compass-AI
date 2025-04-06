@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { ArrowUpRight, TrendingUp, Clock, Frown, ArrowUpCircle, AlertTriangle } from 'lucide-react';
 import NavBar from '@/components/NavBar';
 import SideBar from '@/components/SideBar';
