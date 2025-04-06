@@ -35,7 +35,7 @@ const SideBar: React.FC<SideBarProps> = ({ isOpen, setIsOpen }) => {
     <>
       {isOpen && (
         <div 
-          className="fixed inset-0 bg-black/50 z-20 lg:hidden" 
+          className="fixed inset-0 bg-black/70 z-20 lg:hidden" 
           onClick={() => setIsOpen(false)}
         />
       )}
@@ -56,7 +56,7 @@ const SideBar: React.FC<SideBarProps> = ({ isOpen, setIsOpen }) => {
                 <div className="h-3 w-3 rounded-full bg-quantum-cyan"></div>
               </div>
             </div>
-            <div className="font-bold text-xl">QuantumCS</div>
+            <div className="font-bold text-xl text-foreground">QuantumCS</div>
           </div>
         </div>
 
@@ -70,8 +70,8 @@ const SideBar: React.FC<SideBarProps> = ({ isOpen, setIsOpen }) => {
                     "flex items-center gap-3 px-4 py-2.5 rounded-md transition-colors",
                     "hover:bg-muted",
                     isActive 
-                      ? "bg-muted text-quantum-cyan" 
-                      : "text-muted-foreground"
+                      ? "bg-muted text-quantum-cyan font-medium" 
+                      : "text-foreground"
                   )}
                   onClick={() => setIsOpen(false)}
                 >
@@ -88,7 +88,7 @@ const SideBar: React.FC<SideBarProps> = ({ isOpen, setIsOpen }) => {
             <div className="text-sm font-semibold text-quantum-cyan mb-1">System Status</div>
             <div className="flex items-center gap-2 text-xs">
               <div className="h-2 w-2 rounded-full bg-green-500"></div>
-              <span className="text-muted-foreground">Quantum Processing: Online</span>
+              <span className="text-foreground">Quantum Processing: Online</span>
             </div>
           </div>
         </div>

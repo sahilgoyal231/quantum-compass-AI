@@ -67,9 +67,10 @@ export default {
 					'blue': '#0a192f',
 					'deep-blue': '#020c1b',
 					'cyan': '#64ffda',
-					'purple': '#8a2be2',
-					'violet': '#6e44ff',
-					'glow': '#64ffda33',
+					'bright-cyan': '#72ffdf',
+					'purple': '#9b87f5',
+					'violet': '#8562ff',
+					'glow': '#64ffda40',
 				}
 			},
 			borderRadius: {

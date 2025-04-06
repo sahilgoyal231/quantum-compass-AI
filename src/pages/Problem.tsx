@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { ArrowUpRight, TrendingUp, Clock, Frown, ArrowUpCircle, AlertTriangle } from 'lucide-react';
 import NavBar from '@/components/NavBar';
@@ -13,11 +12,8 @@ import {
   CartesianGrid, 
   Tooltip, 
   Legend, 
-  ResponsiveContainer,
-  Area,
-  AreaChart
+  ResponsiveContainer
 } from 'recharts';
-import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
 
 const problemData = [
   { year: '2020', ticketVolume: 1000, satisfaction: 85 },
@@ -40,7 +36,7 @@ const ProblemPage = () => {
         <main className="flex-1 p-6 lg:ml-64">
           <div className="mb-6">
             <h1 className="text-3xl font-bold text-quantum-cyan mb-2">The Customer Support Crisis</h1>
-            <p className="text-xl text-muted-foreground">Complexity, Delays, and Inconsistency</p>
+            <p className="text-xl text-foreground">Complexity, Delays, and Inconsistency</p>
           </div>
           
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
@@ -51,26 +47,28 @@ const ProblemPage = () => {
               <CardContent className="h-80">
                 <ResponsiveContainer width="100%" height="100%">
                   <LineChart data={problemData}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="year" />
-                    <YAxis yAxisId="left" />
-                    <YAxis yAxisId="right" orientation="right" domain={[50, 100]} />
-                    <Tooltip />
+                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.2)" />
+                    <XAxis dataKey="year" stroke="#e2e8f0" />
+                    <YAxis yAxisId="left" stroke="#e2e8f0" />
+                    <YAxis yAxisId="right" orientation="right" domain={[50, 100]} stroke="#e2e8f0" />
+                    <Tooltip contentStyle={{ backgroundColor: 'rgba(30, 41, 59, 0.9)', borderColor: '#64ffda' }} />
                     <Legend />
                     <Line 
                       yAxisId="left"
                       type="monotone" 
                       dataKey="ticketVolume" 
                       name="Support Tickets"
-                      stroke="#0ea5e9" 
-                      activeDot={{ r: 8 }} 
+                      stroke="#38bdf8" 
+                      strokeWidth={3}
+                      activeDot={{ r: 8, fill: "#38bdf8" }} 
                     />
                     <Line 
                       yAxisId="right"
                       type="monotone" 
                       dataKey="satisfaction" 
                       name="Satisfaction Score"
-                      stroke="#f43f5e" 
+                      stroke="#f87171" 
+                      strokeWidth={3}
                     />
                   </LineChart>
                 </ResponsiveContainer>
@@ -78,7 +76,7 @@ const ProblemPage = () => {
             </Card>
           </div>
           
-          <h2 className="text-2xl font-semibold mb-4">Problem Statement</h2>
+          <h2 className="text-2xl font-semibold mb-4 text-foreground">Problem Statement</h2>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             <Card className="quantum-panel">
@@ -164,7 +162,7 @@ const ProblemPage = () => {
           </div>
           
           <div className="mt-8 flex justify-center">
-            <Button onClick={() => window.location.href = '/solution'} className="group">
+            <Button onClick={() => window.location.href = '/solution'} className="group bg-quantum-cyan text-quantum-deep-blue hover:bg-quantum-cyan/80">
               View Proposed Solution 
               <ArrowUpRight className="ml-2 h-4 w-4 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
             </Button>
