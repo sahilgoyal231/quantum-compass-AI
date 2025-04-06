@@ -5,7 +5,7 @@ import SideBar from '@/components/SideBar';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { BarChart, LineChart, PieChart } from '@/components/ui/chart';
+import { BarChart, LineChart, PieChart } from '@/components/ui/charts';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { CalendarIcon, Download, BarChart3, PieChart as PieChartIcon, LineChart as LineChartIcon, RefreshCw } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
