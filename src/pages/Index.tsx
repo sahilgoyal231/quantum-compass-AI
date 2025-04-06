@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { ArrowUpRight, BrainCircuit, Clock, MessageSquare, Smile, UserCheck, Zap } from 'lucide-react';
 import NavBar from '@/components/NavBar';
@@ -8,6 +9,8 @@ import QuantumVisualizer from '@/components/visualizers/QuantumVisualizer';
 import ChatInterface from '@/components/chat/ChatInterface';
 import { Button } from '@/components/ui/button';
 import { Agent } from '@/components/agents/AgentCard';
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Link } from 'react-router-dom';
 
 const MOCK_AGENTS: Agent[] = [
   {
@@ -56,7 +59,24 @@ const Index = () => {
         <SideBar isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} />
         
         <main className="flex-1 p-6 lg:ml-64">
-          <h1 className="text-2xl font-bold mb-6">Quantum Customer Compass</h1>
+          <div className="flex flex-col md:flex-row md:items-center justify-between mb-6">
+            <div>
+              <h1 className="text-2xl font-bold mb-1">Quantum Customer Compass</h1>
+              <p className="text-muted-foreground">AI-Driven Customer Support Dashboard</p>
+            </div>
+            <div className="flex gap-2 mt-4 md:mt-0">
+              <Button variant="outline" size="sm" asChild>
+                <Link to="/problem">
+                  View Problem
+                </Link>
+              </Button>
+              <Button size="sm" asChild>
+                <Link to="/solution">
+                  Explore Solution
+                </Link>
+              </Button>
+            </div>
+          </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
             <AnalyticsCard 
@@ -98,8 +118,10 @@ const Index = () => {
               <div>
                 <div className="flex items-center justify-between mb-4">
                   <h2 className="text-xl font-semibold">Multi-Agent Network</h2>
-                  <Button size="sm" variant="outline" className="text-xs">
-                    View All <ArrowUpRight className="ml-1 h-3 w-3" />
+                  <Button size="sm" variant="outline" className="text-xs" asChild>
+                    <Link to="/agents">
+                      View All <ArrowUpRight className="ml-1 h-3 w-3" />
+                    </Link>
                   </Button>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -112,6 +134,11 @@ const Index = () => {
               <div>
                 <div className="flex items-center justify-between mb-4">
                   <h2 className="text-xl font-semibold">Quantum Neural Network</h2>
+                  <Button size="sm" variant="outline" className="text-xs" asChild>
+                    <Link to="/workflow">
+                      View Workflow <ArrowUpRight className="ml-1 h-3 w-3" />
+                    </Link>
+                  </Button>
                 </div>
                 <QuantumVisualizer className="h-[300px]" />
               </div>
@@ -123,6 +150,51 @@ const Index = () => {
               </div>
               <ChatInterface className="h-[600px]" />
             </div>
+          </div>
+          
+          <div className="mt-8">
+            <Card className="quantum-panel bg-gradient-to-r from-cyan-900/20 to-purple-900/20 border-cyan-700/30">
+              <CardHeader>
+                <CardTitle className="text-lg">Explore The Full Solution</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-muted-foreground mb-4">
+                  Discover how our autonomous multi-agent ecosystem revolutionizes customer support through neuromorphic computing, quantum-enhanced routing, and self-evolving architecture.
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  <Button variant="outline" size="sm" asChild>
+                    <Link to="/problem">
+                      <MessageSquare className="mr-2 h-4 w-4" />
+                      Problem
+                    </Link>
+                  </Button>
+                  <Button variant="outline" size="sm" asChild>
+                    <Link to="/solution">
+                      <Zap className="mr-2 h-4 w-4" />
+                      Solution
+                    </Link>
+                  </Button>
+                  <Button variant="outline" size="sm" asChild>
+                    <Link to="/technologies">
+                      <BrainCircuit className="mr-2 h-4 w-4" />
+                      Technologies
+                    </Link>
+                  </Button>
+                  <Button variant="outline" size="sm" asChild>
+                    <Link to="/agents">
+                      <UserCheck className="mr-2 h-4 w-4" />
+                      Agents
+                    </Link>
+                  </Button>
+                  <Button variant="outline" size="sm" asChild>
+                    <Link to="/workflow">
+                      <Clock className="mr-2 h-4 w-4" />
+                      Workflow
+                    </Link>
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
           </div>
         </main>
       </div>
