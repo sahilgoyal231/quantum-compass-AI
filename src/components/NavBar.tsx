@@ -12,6 +12,8 @@ import {
   NavigationMenuTrigger,
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
+import NotificationsPopover from './notifications/NotificationsPopover';
+import UserMenu from './user/UserMenu';
 
 interface NavBarProps {
   toggleSidebar: () => void;
@@ -19,7 +21,6 @@ interface NavBarProps {
 
 const NavBar: React.FC<NavBarProps> = ({ toggleSidebar }) => {
   const [isDarkMode, setIsDarkMode] = useState(true);
-  const [notifications, setNotifications] = useState(3);
   
   const toggleTheme = () => {
     // In a real app, this would toggle the theme
@@ -96,29 +97,16 @@ const NavBar: React.FC<NavBarProps> = ({ toggleSidebar }) => {
         >
           {isDarkMode ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
         </Button>
-        <Button 
-          variant="ghost" 
-          size="icon" 
-          className="text-foreground hover:bg-muted relative"
-        >
-          <Bell className="h-5 w-5" />
-          {notifications > 0 && (
-            <span className="absolute top-1 right-1 w-4 h-4 bg-red-500 rounded-full text-xs flex items-center justify-center text-white">
-              {notifications}
-            </span>
-          )}
-        </Button>
+        
+        {/* Notifications Popover */}
+        <NotificationsPopover />
+        
         <Button variant="ghost" size="icon" className="text-foreground hover:bg-muted">
           <HelpCircle className="h-5 w-5" />
         </Button>
-        <Button variant="ghost" size="icon" className="text-foreground hover:bg-muted">
-          <Settings className="h-5 w-5" />
-        </Button>
-        <Button variant="ghost" size="icon" className="text-foreground hover:bg-muted">
-          <div className="h-7 w-7 rounded-full bg-muted flex items-center justify-center overflow-hidden">
-            <User className="h-4 w-4" />
-          </div>
-        </Button>
+        
+        {/* User Menu */}
+        <UserMenu />
       </div>
     </nav>
   );
