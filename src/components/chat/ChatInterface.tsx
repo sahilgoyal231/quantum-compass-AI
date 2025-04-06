@@ -1,25 +1,20 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Send, Mic, Bot, User, HelpCircle, PlusCircle, Smile } from "lucide-react";
+
+import React, { useState, useEffect } from 'react';
+import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
-import { ScrollArea } from "@/components/ui/scroll-area";
-
-interface Message {
-  id: string;
-  content: string;
-  sender: 'user' | 'agent';
-  agentName?: string;
-  agentAvatar?: string;
-  timestamp: Date;
-}
+import { Message } from "@/types/chat";
+import { determineResponseType, formatOrderResponse } from "@/utils/chatUtils";
+import ChatHeader from "./ChatHeader";
+import ChatMessageList from "./ChatMessageList";
+import QuickResponses from "./QuickResponses";
+import ChatInputArea from "./ChatInputArea";
 
 interface ChatInterfaceProps {
   className?: string;
 }
 
+// Mock data and responses moved to constants
 const MOCK_MESSAGES: Message[] = [
   {
     id: '1',
@@ -67,7 +62,7 @@ const MOCK_MESSAGES: Message[] = [
   }
 ];
 
-const quickResponses = [
+const QUICK_RESPONSES = [
   "Track my order",
   "Request a refund",
   "Contact human agent",
@@ -86,40 +81,9 @@ const AI_RESPONSES = {
 const ChatInterface: React.FC<ChatInterfaceProps> = ({ className }) => {
   const { toast } = useToast();
   const [messages, setMessages] = useState<Message[]>(MOCK_MESSAGES);
-  const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
-  const messagesEndRef = useRef<HTMLDivElement>(null);
-  const messagesContainerRef = useRef<HTMLDivElement>(null);
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
-
-  useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
-
-  const determineResponseType = (userMessage: string): keyof typeof AI_RESPONSES => {
-    const message = userMessage.toLowerCase();
-    
-    if (message.includes('order') || message.includes('shipping') || message.includes('delivery') || message.includes('track')) {
-      return 'order';
-    } else if (message.includes('refund') || message.includes('money back') || message.includes('cancel')) {
-      return 'refund';
-    } else if (message.includes('problem') || message.includes('issue') || message.includes('error') || message.includes('not working')) {
-      return 'technical';
-    } else if (message.includes('unhappy') || message.includes('disappointed') || message.includes('angry') || message.includes('upset')) {
-      return 'complaint';
-    } else if (message.includes('price') || message.includes('cost') || message.includes('expensive') || message.includes('cheap')) {
-      return 'pricing';
-    }
-    
-    return 'default';
-  };
-
-  const handleSendMessage = () => {
-    if (!input.trim()) return;
-    
+  const handleSendMessage = (input: string) => {
     const newMessage: Message = {
       id: Date.now().toString(),
       content: input,
@@ -128,18 +92,14 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ className }) => {
     };
     
     setMessages([...messages, newMessage]);
-    setInput("");
     
     setIsTyping(true);
     
-    const responseType = determineResponseType(input);
+    const responseType = determineResponseType(input, AI_RESPONSES);
     let responseContent = AI_RESPONSES[responseType];
     
     if (responseType === 'order') {
-      const orderId = Math.floor(Math.random() * 10000);
-      const statuses = ['being processed', 'prepared for shipping', 'waiting for carrier pickup', 'in transit'];
-      const randomStatus = statuses[Math.floor(Math.random() * statuses.length)];
-      responseContent = responseContent.replace('[ORDER_ID]', orderId.toString()).replace('[STATUS]', randomStatus);
+      responseContent = formatOrderResponse(responseContent);
     }
     
     setTimeout(() => {
@@ -212,149 +172,22 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ className }) => {
 
   return (
     <Card className={cn("flex flex-col h-full quantum-panel", className)}>
-      <CardHeader className="px-4 py-3 border-b border-border">
-        <CardTitle className="text-lg flex items-center gap-2">
-          <BotIcon />
-          Live Support Interface
-        </CardTitle>
-      </CardHeader>
+      <ChatHeader />
       <CardContent className="flex-1 p-4 overflow-hidden flex flex-col">
-        <div className="flex-1 overflow-y-auto space-y-4 pr-2" ref={messagesContainerRef}>
-          <ScrollArea autoScroll={true} className="h-full">
-            {messages.map((message) => (
-              <div
-                key={message.id}
-                className={cn(
-                  "flex",
-                  message.sender === 'user' ? "justify-end" : "justify-start"
-                )}
-              >
-                <div
-                  className={cn(
-                    "max-w-[80%] rounded-lg px-4 py-2",
-                    message.sender === 'user'
-                      ? "bg-primary text-primary-foreground"
-                      : "bg-muted"
-                  )}
-                >
-                  {message.sender === 'agent' && message.agentName && (
-                    <div className="flex items-center gap-1 mb-1">
-                      {message.agentAvatar ? (
-                        <div className="h-5 w-5 rounded-full overflow-hidden">
-                          <img src={message.agentAvatar} alt={message.agentName} className="h-full w-full object-cover" />
-                        </div>
-                      ) : (
-                        <Bot size={14} />
-                      )}
-                      <span className="text-xs font-medium text-quantum-cyan">{message.agentName}</span>
-                    </div>
-                  )}
-                  <p className="text-sm text-wrap-pretty">{message.content}</p>
-                  <div className="flex justify-end mt-1">
-                    <span className="text-xs opacity-70">
-                      {new Intl.DateTimeFormat('en-US', {
-                        hour: '2-digit',
-                        minute: '2-digit'
-                      }).format(message.timestamp)}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            ))}
-            
-            {isTyping && (
-              <div className="flex justify-start">
-                <div className="bg-muted rounded-lg px-4 py-2">
-                  <div className="flex items-center gap-1">
-                    <Bot size={14} />
-                    <span className="text-xs font-medium text-quantum-cyan">Quantum Agent</span>
-                  </div>
-                  <div className="flex gap-1 mt-1">
-                    <div className="w-2 h-2 rounded-full bg-quantum-cyan animate-pulse"></div>
-                    <div className="w-2 h-2 rounded-full bg-quantum-cyan animate-pulse" style={{ animationDelay: '0.2s' }}></div>
-                    <div className="w-2 h-2 rounded-full bg-quantum-cyan animate-pulse" style={{ animationDelay: '0.4s' }}></div>
-                  </div>
-                </div>
-              </div>
-            )}
-            <div ref={messagesEndRef} />
-          </ScrollArea>
-        </div>
+        <ChatMessageList 
+          messages={messages} 
+          isTyping={isTyping} 
+        />
         
-        <div className="flex flex-wrap gap-2 mt-4 mb-2">
-          {quickResponses.map((response) => (
-            <Button 
-              key={response} 
-              variant="outline" 
-              size="sm" 
-              className="text-xs"
-              onClick={() => handleQuickResponse(response)}
-            >
-              {response}
-            </Button>
-          ))}
-        </div>
+        <QuickResponses 
+          responses={QUICK_RESPONSES} 
+          onSelectResponse={handleQuickResponse} 
+        />
         
-        <div className="flex gap-2">
-          <div className="flex gap-1">
-            <Button 
-              variant="outline" 
-              size="icon" 
-              title="Voice input"
-              onClick={() => toast({
-                title: "Voice Input",
-                description: "Voice recognition activated. Please speak clearly.",
-              })}
-            >
-              <Mic size={18} />
-            </Button>
-            <Button 
-              variant="outline" 
-              size="icon" 
-              title="Add attachment"
-              onClick={() => toast({
-                title: "Attachment",
-                description: "File upload functionality enabled.",
-              })}
-            >
-              <PlusCircle size={18} />
-            </Button>
-          </div>
-          <Input
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            placeholder="Send a message..."
-            className="flex-1"
-            onKeyPress={(e) => {
-              if (e.key === 'Enter') handleSendMessage();
-            }}
-          />
-          <Button onClick={handleSendMessage}>
-            <Send size={18} className="mr-2" />
-            Send
-          </Button>
-        </div>
-        
-        <div className="flex justify-end mt-2">
-          <Button 
-            variant="ghost" 
-            size="sm" 
-            className="text-xs flex items-center gap-1"
-            onClick={() => window.open('/help', '_blank')}
-          >
-            <HelpCircle size={12} />
-            Help Center
-          </Button>
-        </div>
+        <ChatInputArea onSendMessage={handleSendMessage} />
       </CardContent>
     </Card>
   );
 };
-
-const BotIcon = () => (
-  <div className="h-6 w-6 rounded-full bg-quantum-cyan/20 flex items-center justify-center">
-    <Bot size={14} className="text-quantum-cyan" />
-  </div>
-);
 
 export default ChatInterface;
