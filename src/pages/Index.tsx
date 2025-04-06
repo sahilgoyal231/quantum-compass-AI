@@ -7,14 +7,15 @@ import AgentCard from '@/components/agents/AgentCard';
 import QuantumVisualizer from '@/components/visualizers/QuantumVisualizer';
 import ChatInterface from '@/components/chat/ChatInterface';
 import { Button } from '@/components/ui/button';
+import { Agent } from '@/components/agents/AgentCard';
 
-const MOCK_AGENTS = [
+const MOCK_AGENTS: Agent[] = [
   {
     id: '1',
     name: 'NeuroNova',
     role: 'Customer Engagement Lead',
     avatar: '/lovable-uploads/04036a14-dacd-496b-9e60-16b01d30aeec.png',
-    status: 'active',
+    status: 'active' as 'active',
     specialty: ['Sentiment Analysis', 'Empathetic Response'],
     efficiency: 94,
     responseTime: '1.2s',
@@ -25,7 +26,7 @@ const MOCK_AGENTS = [
     name: 'QuantumSolve',
     role: 'Technical Support Specialist',
     avatar: '/lovable-uploads/bbee9dda-1cfa-450e-a15f-d214b7666360.png',
-    status: 'active',
+    status: 'active' as 'active',
     specialty: ['Troubleshooting', 'Technical Solutions'],
     efficiency: 92,
     responseTime: '1.5s',
@@ -36,7 +37,7 @@ const MOCK_AGENTS = [
     name: 'LogisticsSolver-7',
     role: 'Logistics & Order Management',
     avatar: 'https://api.dicebear.com/7.x/bottts/svg?seed=logistics',
-    status: 'idle',
+    status: 'idle' as 'idle',
     specialty: ['Order Tracking', 'Supply Chain'],
     efficiency: 89,
     responseTime: '1.8s',
