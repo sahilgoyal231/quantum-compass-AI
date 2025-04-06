@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -61,6 +62,14 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
+				},
+				quantum: {
+					'blue': '#0a192f',
+					'deep-blue': '#020c1b',
+					'cyan': '#64ffda',
+					'purple': '#8a2be2',
+					'violet': '#6e44ff',
+					'glow': '#64ffda33',
 				}
 			},
 			borderRadius: {
@@ -84,11 +93,36 @@ export default {
 					to: {
 						height: '0'
 					}
-				}
+				},
+				'pulse-glow': {
+					'0%, 100%': { 
+						opacity: '0.6',
+						boxShadow: '0 0 15px 3px rgba(100, 255, 218, 0.2)'
+					},
+					'50%': { 
+						opacity: '1',
+						boxShadow: '0 0 20px 5px rgba(100, 255, 218, 0.4)'
+					},
+				},
+				'quantum-float': {
+					'0%, 100%': { transform: 'translateY(0)' },
+					'50%': { transform: 'translateY(-10px)' },
+				},
+				'data-flow': {
+					'0%': { transform: 'translateY(0)', opacity: '0' },
+					'50%': { opacity: '1' },
+					'100%': { transform: 'translateY(100%)', opacity: '0' },
+				},
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out'
+				'accordion-up': 'accordion-up 0.2s ease-out',
+				'pulse-glow': 'pulse-glow 3s infinite',
+				'quantum-float': 'quantum-float 6s ease-in-out infinite',
+				'data-flow': 'data-flow 2s linear infinite',
+			},
+			backgroundImage: {
+				'quantum-grid': 'radial-gradient(circle, rgba(100,255,218,0.1) 1px, transparent 1px)',
 			}
 		}
 	},
