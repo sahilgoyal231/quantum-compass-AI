@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { ArrowUpRight, BrainCircuit, Clock, MessageSquare, Smile, UserCheck, Zap } from 'lucide-react';
 import NavBar from '@/components/NavBar';
@@ -43,7 +42,7 @@ const MOCK_AGENTS = [
     responseTime: '1.8s',
     successRate: 93
   }
-] as const;
+];
 
 const Index = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
