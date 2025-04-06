@@ -12,6 +12,8 @@ import AgentsPage from "./pages/Agents";
 import WorkflowPage from "./pages/Workflow";
 import HelpPage from "./pages/Help";
 import NotFound from "./pages/NotFound";
+import AnalyticsPage from "./pages/Analytics";
+import ChatPage from "./pages/Chat";
 
 const queryClient = new QueryClient();
 
@@ -29,10 +31,10 @@ const App = () => (
           <Route path="/agents" element={<AgentsPage />} />
           <Route path="/workflow" element={<WorkflowPage />} />
           <Route path="/help" element={<HelpPage />} />
+          <Route path="/analytics" element={<AnalyticsPage />} />
+          <Route path="/chat" element={<ChatPage />} />
           {/* These routes will show the 404 page until they're implemented */}
           <Route path="/customers" element={<NotFound />} />
-          <Route path="/chat" element={<NotFound />} />
-          <Route path="/analytics" element={<NotFound />} />
           <Route path="/neural-net" element={<NotFound />} />
           <Route path="/agent-hub" element={<NotFound />} />
           <Route path="/knowledge" element={<NotFound />} />

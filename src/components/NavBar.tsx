@@ -14,6 +14,8 @@ import {
 } from "@/components/ui/navigation-menu";
 import NotificationsPopover from './notifications/NotificationsPopover';
 import UserMenu from './user/UserMenu';
+import { Link } from 'react-router-dom';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface NavBarProps {
   toggleSidebar: () => void;
@@ -21,6 +23,7 @@ interface NavBarProps {
 
 const NavBar: React.FC<NavBarProps> = ({ toggleSidebar }) => {
   const [isDarkMode, setIsDarkMode] = useState(true);
+  const isMobile = useIsMobile();
   
   useEffect(() => {
     // Check if there's a saved theme preference
@@ -42,8 +45,8 @@ const NavBar: React.FC<NavBarProps> = ({ toggleSidebar }) => {
   };
   
   return (
-    <nav className="w-full h-16 px-6 flex items-center justify-between bg-card/90 backdrop-blur-sm border-b border-border z-10 sticky top-0">
-      <div className="flex items-center gap-4">
+    <nav className="w-full h-16 px-3 sm:px-6 flex items-center justify-between bg-card/90 backdrop-blur-sm border-b border-border z-10 sticky top-0">
+      <div className="flex items-center gap-2 sm:gap-4">
         <Button 
           variant="ghost" 
           size="icon" 
@@ -61,27 +64,27 @@ const NavBar: React.FC<NavBarProps> = ({ toggleSidebar }) => {
               <div className="h-3 w-3 rounded-full bg-quantum-bright-cyan"></div>
             </div>
           </div>
-          <div className="font-bold text-xl text-foreground">QuantumCS</div>
+          <div className="font-bold text-lg sm:text-xl text-foreground">QuantumCS</div>
         </div>
         
         <NavigationMenu className="hidden md:flex">
           <NavigationMenuList>
             <NavigationMenuItem>
-              <NavigationMenuTrigger className="h-8 px-2 text-xs">Solutions</NavigationMenuTrigger>
+              <NavigationMenuTrigger className="h-8 px-2 text-xs sm:text-sm">Solutions</NavigationMenuTrigger>
               <NavigationMenuContent>
-                <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
+                <ul className="grid w-[350px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
                   {menuItems.map((item) => (
                     <li key={item.title}>
                       <NavigationMenuLink asChild>
-                        <a 
-                          href={item.href} 
+                        <Link 
+                          to={item.href} 
                           className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
                         >
                           <div className="text-sm font-medium leading-none">{item.title}</div>
-                          <p className="line-clamp-2 text-xs leading-snug text-muted-foreground">
+                          <p className="text-wrap-balance line-clamp-2 text-xs leading-snug text-muted-foreground">
                             {item.description}
                           </p>
-                        </a>
+                        </Link>
                       </NavigationMenuLink>
                     </li>
                   ))}
@@ -89,20 +92,24 @@ const NavBar: React.FC<NavBarProps> = ({ toggleSidebar }) => {
               </NavigationMenuContent>
             </NavigationMenuItem>
             <NavigationMenuItem>
-              <NavigationMenuLink className={cn(navigationMenuTriggerStyle(), "h-8 px-2 text-xs")} href="/agents">
-                Agents
+              <NavigationMenuLink asChild>
+                <Link to="/agents" className={cn(navigationMenuTriggerStyle(), "h-8 px-2 text-xs sm:text-sm")}>
+                  Agents
+                </Link>
               </NavigationMenuLink>
             </NavigationMenuItem>
             <NavigationMenuItem>
-              <NavigationMenuLink className={cn(navigationMenuTriggerStyle(), "h-8 px-2 text-xs")} href="/technologies">
-                Technologies
+              <NavigationMenuLink asChild>
+                <Link to="/technologies" className={cn(navigationMenuTriggerStyle(), "h-8 px-2 text-xs sm:text-sm")}>
+                  Technologies
+                </Link>
               </NavigationMenuLink>
             </NavigationMenuItem>
           </NavigationMenuList>
         </NavigationMenu>
       </div>
 
-      <div className="flex items-center gap-1">
+      <div className="flex items-center gap-1 sm:gap-2">
         <Button 
           variant="ghost" 
           size="icon" 
