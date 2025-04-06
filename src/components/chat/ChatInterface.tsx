@@ -1,10 +1,11 @@
 
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Send, Mic, Bot, User, HelpCircle, PlusCircle, Smile } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useToast } from "@/hooks/use-toast";
 
 interface Message {
   id: string;
@@ -73,10 +74,51 @@ const quickResponses = [
   "My account settings"
 ];
 
+// Advanced responses for different user queries
+const AI_RESPONSES = {
+  default: "I've analyzed your query using our quantum processing network. Based on your customer profile and historical data patterns, here's a tailored solution that addresses your specific needs while optimizing for satisfaction metrics.",
+  order: "I've located your order in our system. Your package #QC-[ORDER_ID] is currently [STATUS]. Our logistics team has been notified and is prioritizing your shipment. Would you like me to send you real-time updates via your preferred notification method?",
+  refund: "I understand you're requesting a refund. I've reviewed your purchase history and eligibility. Based on our quantum analysis of your customer journey, I can offer you these options: [1] Full refund processed within 24 hours, [2] Store credit with a 15% bonus value, or [3] Exchange with expedited shipping. Which would you prefer?",
+  technical: "I've identified the technical issue you're experiencing. Our diagnostic agent has analyzed similar patterns across our knowledge base and found that 87% of similar cases were resolved by [SOLUTION]. Would you like me to guide you through the fix, or would you prefer I handle it remotely for you?",
+  complaint: "I sincerely apologize for your experience. Our sentiment analysis indicates this has caused you significant frustration. I've escalated this to our CustomerAdvocate agent who has full authority to resolve this issue to your complete satisfaction. While they prepare a comprehensive solution, is there any immediate concern I can address?",
+  pricing: "Based on your usage patterns and customer segment, I've run a quantum analysis of our pricing tiers. I can offer you a customized plan that would save you approximately 22% while providing all the features you regularly use, plus additional services that align with your business growth trajectory."
+};
+
 const ChatInterface: React.FC<ChatInterfaceProps> = ({ className }) => {
+  const { toast } = useToast();
   const [messages, setMessages] = useState<Message[]>(MOCK_MESSAGES);
   const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const messagesContainerRef = useRef<HTMLDivElement>(null);
+
+  // Function to scroll to the bottom of the messages
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  // Scroll to bottom when messages change
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
+  const determineResponseType = (userMessage: string): keyof typeof AI_RESPONSES => {
+    const message = userMessage.toLowerCase();
+    
+    if (message.includes('order') || message.includes('shipping') || message.includes('delivery') || message.includes('track')) {
+      return 'order';
+    } else if (message.includes('refund') || message.includes('money back') || message.includes('cancel')) {
+      return 'refund';
+    } else if (message.includes('problem') || message.includes('issue') || message.includes('error') || message.includes('not working')) {
+      return 'technical';
+    } else if (message.includes('unhappy') || message.includes('disappointed') || message.includes('angry') || message.includes('upset')) {
+      return 'complaint';
+    } else if (message.includes('price') || message.includes('cost') || message.includes('expensive') || message.includes('cheap')) {
+      return 'pricing';
+    }
+    
+    return 'default';
+  };
 
   const handleSendMessage = () => {
     if (!input.trim()) return;
@@ -94,11 +136,23 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ className }) => {
     // Simulate agent typing
     setIsTyping(true);
     
+    // Determine response type based on user input
+    const responseType = determineResponseType(input);
+    let responseContent = AI_RESPONSES[responseType];
+    
+    // Replace placeholders with dynamic content if needed
+    if (responseType === 'order') {
+      const orderId = Math.floor(Math.random() * 10000);
+      const statuses = ['being processed', 'prepared for shipping', 'waiting for carrier pickup', 'in transit'];
+      const randomStatus = statuses[Math.floor(Math.random() * statuses.length)];
+      responseContent = responseContent.replace('[ORDER_ID]', orderId.toString()).replace('[STATUS]', randomStatus);
+    }
+    
     // Simulate agent response
     setTimeout(() => {
       const agentResponse: Message = {
         id: (Date.now() + 1).toString(),
-        content: "I've analyzed your query using our quantum processing network. Based on your customer profile and historical data patterns, here's a tailored solution that addresses your specific needs while optimizing for satisfaction metrics.",
+        content: responseContent,
         sender: 'agent',
         agentName: "QuantumSolve",
         agentAvatar: "https://api.dicebear.com/7.x/bottts/svg?seed=quantumsolve&backgroundColor=c0aede&scale=90",
@@ -107,7 +161,13 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ className }) => {
       
       setMessages(prev => [...prev, agentResponse]);
       setIsTyping(false);
-    }, 3000);
+      
+      toast({
+        title: "New message",
+        description: "QuantumSolve has responded to your query.",
+        duration: 3000,
+      });
+    }, 2000 + Math.random() * 1000); // Random delay between 2-3 seconds for more realistic effect
   };
 
   const handleQuickResponse = (response: string) => {
@@ -123,20 +183,41 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ className }) => {
     // Simulate agent typing
     setIsTyping(true);
     
+    // Determine response based on the quick response type
+    let responseContent = "";
+    let agentName = "NeuroNova";
+    let agentAvatar = "https://api.dicebear.com/7.x/bottts/svg?seed=neuronova&backgroundColor=b6e3f4&scale=90";
+    
+    if (response === "Track my order") {
+      responseContent = "I can help you track your order. Could you please provide your order number? Alternatively, I can pull up all your recent orders if you'd prefer.";
+    } else if (response === "Request a refund") {
+      responseContent = "I'd be happy to assist with your refund request. Before we proceed, could you confirm which order you'd like to refund, and the reason for your return? This will help us process your request more efficiently.";
+      agentName = "RefundProcessor";
+      agentAvatar = "https://api.dicebear.com/7.x/bottts/svg?seed=refund&backgroundColor=ffd6d6&scale=90";
+    } else if (response === "Contact human agent") {
+      responseContent = "I'll connect you with a human customer support specialist right away. While I prepare the handover, could you briefly describe your issue so they can be ready to assist you? A specialist should be with you in approximately 2 minutes.";
+      agentName = "SupportCoordinator";
+      agentAvatar = "https://api.dicebear.com/7.x/bottts/svg?seed=human&backgroundColor=d6ffd6&scale=90";
+    } else if (response === "My account settings") {
+      responseContent = "You can manage your account settings through the profile section. Would you like me to guide you to specific settings such as notification preferences, privacy controls, or payment methods? Or would you like an overview of all available options?";
+      agentName = "AccountManager";
+      agentAvatar = "https://api.dicebear.com/7.x/bottts/svg?seed=account&backgroundColor=d6d6ff&scale=90";
+    }
+    
     // Simulate agent response
     setTimeout(() => {
       const agentResponse: Message = {
         id: (Date.now() + 1).toString(),
-        content: `I'll help you with "${response}". Let me pull up the relevant information...`,
+        content: responseContent,
         sender: 'agent',
-        agentName: "NeuroNova",
-        agentAvatar: "https://api.dicebear.com/7.x/bottts/svg?seed=neuronova&backgroundColor=b6e3f4&scale=90",
+        agentName: agentName,
+        agentAvatar: agentAvatar,
         timestamp: new Date()
       };
       
       setMessages(prev => [...prev, agentResponse]);
       setIsTyping(false);
-    }, 2000);
+    }, 1500);
   };
 
   return (
@@ -148,7 +229,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ className }) => {
         </CardTitle>
       </CardHeader>
       <CardContent className="flex-1 p-4 overflow-hidden flex flex-col">
-        <div className="flex-1 overflow-y-auto space-y-4 pr-2">
+        <div className="flex-1 overflow-y-auto space-y-4 pr-2" ref={messagesContainerRef}>
           {messages.map((message) => (
             <div
               key={message.id}
@@ -177,7 +258,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ className }) => {
                     <span className="text-xs font-medium text-quantum-cyan">{message.agentName}</span>
                   </div>
                 )}
-                <p className="text-sm">{message.content}</p>
+                <p className="text-sm text-wrap-pretty">{message.content}</p>
                 <div className="flex justify-end mt-1">
                   <span className="text-xs opacity-70">
                     {new Intl.DateTimeFormat('en-US', {
@@ -205,6 +286,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ className }) => {
               </div>
             </div>
           )}
+          <div ref={messagesEndRef} />
         </div>
         
         {/* Quick responses */}
@@ -224,10 +306,26 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ className }) => {
         
         <div className="flex gap-2">
           <div className="flex gap-1">
-            <Button variant="outline" size="icon" title="Voice input">
+            <Button 
+              variant="outline" 
+              size="icon" 
+              title="Voice input"
+              onClick={() => toast({
+                title: "Voice Input",
+                description: "Voice recognition activated. Please speak clearly.",
+              })}
+            >
               <Mic size={18} />
             </Button>
-            <Button variant="outline" size="icon" title="Add attachment">
+            <Button 
+              variant="outline" 
+              size="icon" 
+              title="Add attachment"
+              onClick={() => toast({
+                title: "Attachment",
+                description: "File upload functionality enabled.",
+              })}
+            >
               <PlusCircle size={18} />
             </Button>
           </div>
@@ -247,7 +345,12 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ className }) => {
         </div>
         
         <div className="flex justify-end mt-2">
-          <Button variant="ghost" size="sm" className="text-xs flex items-center gap-1">
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            className="text-xs flex items-center gap-1"
+            onClick={() => window.open('/help', '_blank')}
+          >
             <HelpCircle size={12} />
             Help Center
           </Button>

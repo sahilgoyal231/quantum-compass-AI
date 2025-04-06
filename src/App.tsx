@@ -10,6 +10,7 @@ import SolutionPage from "./pages/Solution";
 import TechnologiesPage from "./pages/Technologies";
 import AgentsPage from "./pages/Agents";
 import WorkflowPage from "./pages/Workflow";
+import HelpPage from "./pages/Help";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -27,6 +28,7 @@ const App = () => (
           <Route path="/technologies" element={<TechnologiesPage />} />
           <Route path="/agents" element={<AgentsPage />} />
           <Route path="/workflow" element={<WorkflowPage />} />
+          <Route path="/help" element={<HelpPage />} />
           {/* These routes will show the 404 page until they're implemented */}
           <Route path="/customers" element={<NotFound />} />
           <Route path="/chat" element={<NotFound />} />

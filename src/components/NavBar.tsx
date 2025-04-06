@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Bell, Settings, User, Menu, Moon, Sun, HelpCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -22,9 +22,23 @@ interface NavBarProps {
 const NavBar: React.FC<NavBarProps> = ({ toggleSidebar }) => {
   const [isDarkMode, setIsDarkMode] = useState(true);
   
+  useEffect(() => {
+    // Check if there's a saved theme preference
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme) {
+      setIsDarkMode(savedTheme === 'dark');
+      document.documentElement.classList.toggle('light', savedTheme === 'light');
+    } else {
+      // Default to dark mode
+      setIsDarkMode(true);
+    }
+  }, []);
+  
   const toggleTheme = () => {
-    // In a real app, this would toggle the theme
-    setIsDarkMode(!isDarkMode);
+    const newTheme = !isDarkMode;
+    setIsDarkMode(newTheme);
+    document.documentElement.classList.toggle('light', !newTheme);
+    localStorage.setItem('theme', newTheme ? 'dark' : 'light');
   };
   
   return (
@@ -94,6 +108,7 @@ const NavBar: React.FC<NavBarProps> = ({ toggleSidebar }) => {
           size="icon" 
           className="text-foreground hover:bg-muted"
           onClick={toggleTheme}
+          aria-label={isDarkMode ? "Switch to light mode" : "Switch to dark mode"}
         >
           {isDarkMode ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
         </Button>
@@ -101,7 +116,12 @@ const NavBar: React.FC<NavBarProps> = ({ toggleSidebar }) => {
         {/* Notifications Popover */}
         <NotificationsPopover />
         
-        <Button variant="ghost" size="icon" className="text-foreground hover:bg-muted">
+        <Button 
+          variant="ghost" 
+          size="icon" 
+          className="text-foreground hover:bg-muted"
+          onClick={() => window.open('/help', '_blank')}
+        >
           <HelpCircle className="h-5 w-5" />
         </Button>
         

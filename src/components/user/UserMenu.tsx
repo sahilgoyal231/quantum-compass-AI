@@ -36,6 +36,7 @@ const UserMenu = () => {
   };
 
   const handleHelpClick = () => {
+    window.open('/help', '_blank');
     toast({
       title: "Help Center",
       description: "Opening help documentation...",
@@ -72,7 +73,7 @@ const UserMenu = () => {
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DialogTrigger asChild>
-              <DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setIsProfileOpen(true)}>
                 <User className="mr-2 h-4 w-4" />
                 <span>Profile</span>
               </DropdownMenuItem>
@@ -97,7 +98,6 @@ const UserMenu = () => {
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
-        <DialogTrigger className="hidden" />
         
         {/* This is rendered when the dialog is open */}
         <UserProfile className="w-full max-w-2xl mx-auto" />
