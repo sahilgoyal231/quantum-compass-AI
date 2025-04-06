@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -6,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Send, Mic, Bot, User, HelpCircle, PlusCircle, Smile } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface Message {
   id: string;
@@ -74,7 +74,6 @@ const quickResponses = [
   "My account settings"
 ];
 
-// Advanced responses for different user queries
 const AI_RESPONSES = {
   default: "I've analyzed your query using our quantum processing network. Based on your customer profile and historical data patterns, here's a tailored solution that addresses your specific needs while optimizing for satisfaction metrics.",
   order: "I've located your order in our system. Your package #QC-[ORDER_ID] is currently [STATUS]. Our logistics team has been notified and is prioritizing your shipment. Would you like me to send you real-time updates via your preferred notification method?",
@@ -92,12 +91,10 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ className }) => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
 
-  // Function to scroll to the bottom of the messages
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
-  // Scroll to bottom when messages change
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
@@ -133,14 +130,11 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ className }) => {
     setMessages([...messages, newMessage]);
     setInput("");
     
-    // Simulate agent typing
     setIsTyping(true);
     
-    // Determine response type based on user input
     const responseType = determineResponseType(input);
     let responseContent = AI_RESPONSES[responseType];
     
-    // Replace placeholders with dynamic content if needed
     if (responseType === 'order') {
       const orderId = Math.floor(Math.random() * 10000);
       const statuses = ['being processed', 'prepared for shipping', 'waiting for carrier pickup', 'in transit'];
@@ -148,7 +142,6 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ className }) => {
       responseContent = responseContent.replace('[ORDER_ID]', orderId.toString()).replace('[STATUS]', randomStatus);
     }
     
-    // Simulate agent response
     setTimeout(() => {
       const agentResponse: Message = {
         id: (Date.now() + 1).toString(),
@@ -167,7 +160,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ className }) => {
         description: "QuantumSolve has responded to your query.",
         duration: 3000,
       });
-    }, 2000 + Math.random() * 1000); // Random delay between 2-3 seconds for more realistic effect
+    }, 2000 + Math.random() * 1000);
   };
 
   const handleQuickResponse = (response: string) => {
@@ -180,10 +173,8 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ className }) => {
     
     setMessages([...messages, newMessage]);
     
-    // Simulate agent typing
     setIsTyping(true);
     
-    // Determine response based on the quick response type
     let responseContent = "";
     let agentName = "NeuroNova";
     let agentAvatar = "https://api.dicebear.com/7.x/bottts/svg?seed=neuronova&backgroundColor=b6e3f4&scale=90";
@@ -204,7 +195,6 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ className }) => {
       agentAvatar = "https://api.dicebear.com/7.x/bottts/svg?seed=account&backgroundColor=d6d6ff&scale=90";
     }
     
-    // Simulate agent response
     setTimeout(() => {
       const agentResponse: Message = {
         id: (Date.now() + 1).toString(),
@@ -230,66 +220,67 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ className }) => {
       </CardHeader>
       <CardContent className="flex-1 p-4 overflow-hidden flex flex-col">
         <div className="flex-1 overflow-y-auto space-y-4 pr-2" ref={messagesContainerRef}>
-          {messages.map((message) => (
-            <div
-              key={message.id}
-              className={cn(
-                "flex",
-                message.sender === 'user' ? "justify-end" : "justify-start"
-              )}
-            >
+          <ScrollArea autoScroll={true} className="h-full">
+            {messages.map((message) => (
               <div
+                key={message.id}
                 className={cn(
-                  "max-w-[80%] rounded-lg px-4 py-2",
-                  message.sender === 'user'
-                    ? "bg-primary text-primary-foreground"
-                    : "bg-muted"
+                  "flex",
+                  message.sender === 'user' ? "justify-end" : "justify-start"
                 )}
               >
-                {message.sender === 'agent' && message.agentName && (
-                  <div className="flex items-center gap-1 mb-1">
-                    {message.agentAvatar ? (
-                      <div className="h-5 w-5 rounded-full overflow-hidden">
-                        <img src={message.agentAvatar} alt={message.agentName} className="h-full w-full object-cover" />
-                      </div>
-                    ) : (
-                      <Bot size={14} />
-                    )}
-                    <span className="text-xs font-medium text-quantum-cyan">{message.agentName}</span>
+                <div
+                  className={cn(
+                    "max-w-[80%] rounded-lg px-4 py-2",
+                    message.sender === 'user'
+                      ? "bg-primary text-primary-foreground"
+                      : "bg-muted"
+                  )}
+                >
+                  {message.sender === 'agent' && message.agentName && (
+                    <div className="flex items-center gap-1 mb-1">
+                      {message.agentAvatar ? (
+                        <div className="h-5 w-5 rounded-full overflow-hidden">
+                          <img src={message.agentAvatar} alt={message.agentName} className="h-full w-full object-cover" />
+                        </div>
+                      ) : (
+                        <Bot size={14} />
+                      )}
+                      <span className="text-xs font-medium text-quantum-cyan">{message.agentName}</span>
+                    </div>
+                  )}
+                  <p className="text-sm text-wrap-pretty">{message.content}</p>
+                  <div className="flex justify-end mt-1">
+                    <span className="text-xs opacity-70">
+                      {new Intl.DateTimeFormat('en-US', {
+                        hour: '2-digit',
+                        minute: '2-digit'
+                      }).format(message.timestamp)}
+                    </span>
                   </div>
-                )}
-                <p className="text-sm text-wrap-pretty">{message.content}</p>
-                <div className="flex justify-end mt-1">
-                  <span className="text-xs opacity-70">
-                    {new Intl.DateTimeFormat('en-US', {
-                      hour: '2-digit',
-                      minute: '2-digit'
-                    }).format(message.timestamp)}
-                  </span>
                 </div>
               </div>
-            </div>
-          ))}
-          
-          {isTyping && (
-            <div className="flex justify-start">
-              <div className="bg-muted rounded-lg px-4 py-2">
-                <div className="flex items-center gap-1">
-                  <Bot size={14} />
-                  <span className="text-xs font-medium text-quantum-cyan">Quantum Agent</span>
-                </div>
-                <div className="flex gap-1 mt-1">
-                  <div className="w-2 h-2 rounded-full bg-quantum-cyan animate-pulse"></div>
-                  <div className="w-2 h-2 rounded-full bg-quantum-cyan animate-pulse" style={{ animationDelay: '0.2s' }}></div>
-                  <div className="w-2 h-2 rounded-full bg-quantum-cyan animate-pulse" style={{ animationDelay: '0.4s' }}></div>
+            ))}
+            
+            {isTyping && (
+              <div className="flex justify-start">
+                <div className="bg-muted rounded-lg px-4 py-2">
+                  <div className="flex items-center gap-1">
+                    <Bot size={14} />
+                    <span className="text-xs font-medium text-quantum-cyan">Quantum Agent</span>
+                  </div>
+                  <div className="flex gap-1 mt-1">
+                    <div className="w-2 h-2 rounded-full bg-quantum-cyan animate-pulse"></div>
+                    <div className="w-2 h-2 rounded-full bg-quantum-cyan animate-pulse" style={{ animationDelay: '0.2s' }}></div>
+                    <div className="w-2 h-2 rounded-full bg-quantum-cyan animate-pulse" style={{ animationDelay: '0.4s' }}></div>
+                  </div>
                 </div>
               </div>
-            </div>
-          )}
-          <div ref={messagesEndRef} />
+            )}
+            <div ref={messagesEndRef} />
+          </ScrollArea>
         </div>
         
-        {/* Quick responses */}
         <div className="flex flex-wrap gap-2 mt-4 mb-2">
           {quickResponses.map((response) => (
             <Button 
@@ -360,7 +351,6 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ className }) => {
   );
 };
 
-// Helper component for consistent bot icon
 const BotIcon = () => (
   <div className="h-6 w-6 rounded-full bg-quantum-cyan/20 flex items-center justify-center">
     <Bot size={14} className="text-quantum-cyan" />
